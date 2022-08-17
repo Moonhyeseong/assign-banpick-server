@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const inGameSchema = new mongoose.Schema({
   game_id: {
