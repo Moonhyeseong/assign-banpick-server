@@ -1,5 +1,4 @@
 const express = require('express');
-const http = require('http');
 const cors = require('cors');
 
 const connect = require('./models');
@@ -17,3 +16,4 @@ app.listen(8080, () => {
 
 app.use(cors());
 app.use('/', require('./router/start.js'));
+app.use('/', require('./router/banpick.js'));

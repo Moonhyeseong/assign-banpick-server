@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const dbUrl =
   'mongodb+srv://mhs970:745263sy@cluster0.viyda96.mongodb.net/?retryWrites=true&w=majority';
 
-// 몽구스 연결 함수
+// 몽구스 연결
 const connect = () => {
   mongoose.connect(
     dbUrl,
     {
-      dbName: 'banpick', // 실제로 데이터 저장할 db명
+      dbName: 'banpick', // DB name
       useNewUrlParser: true,
     },
     error => {

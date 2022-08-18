@@ -1,27 +1,39 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.ObjectId;
 
 const inGameSchema = new mongoose.Schema({
   game_id: {
     type: ObjectId,
-    required: true,
     ref: 'game',
   },
   blue_pickList: {
-    type: ObjectId,
+    type: Array,
     required: true,
+    default: ['', '', '', '', ''],
   },
   red_pickList: {
-    type: ObjectId,
+    type: Array,
     required: true,
+    default: ['', '', '', '', ''],
   },
   blue_banList: {
-    type: ObjectId,
+    type: Array,
     required: true,
+    default: ['', '', '', '', ''],
   },
   red_banList: {
-    type: ObjectId,
+    type: Array,
     required: true,
+    default: ['', '', '', '', ''],
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now(),
+    expires: 3600,
   },
 });
 
 module.exports = mongoose.model('ingame', inGameSchema, 'ingameData');
+
+//

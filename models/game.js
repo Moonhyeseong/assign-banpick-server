@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.ObjectId;
 
 const gameSchema = new mongoose.Schema({
+  ingame: {
+    type: ObjectId,
+    ref: 'ingame',
+  },
   blueTeam: {
     type: String,
     default: 'BLUE TEAM',
@@ -17,7 +22,12 @@ const gameSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  date: { type: Date, default: Date.now },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now(),
+    expires: 3600,
+  },
 });
 
 module.exports = mongoose.model('game', gameSchema);
