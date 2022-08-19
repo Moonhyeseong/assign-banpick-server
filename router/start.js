@@ -14,6 +14,7 @@ router.post('/start', (req, res) => {
     },
     (err, result) => {
       console.log('Create Game');
+      if (err) throw err;
       InGame.create({ game_id: result._id }, (err, result) => {
         res.status(201).json(result);
       });

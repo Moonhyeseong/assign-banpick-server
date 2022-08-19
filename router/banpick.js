@@ -15,7 +15,7 @@ router.post('/banpick/:id', (req, res) => {
 
   InGame.findOneAndUpdate({ _id: filterID }, update, (err, result) => {
     if (err) throw err;
-    res.send(result);
+    res.status(201).send(result);
   });
 });
 
@@ -23,7 +23,8 @@ router.get('/banpick/:id', (req, res) => {
   const filterID = req.params.id;
 
   InGame.findById(filterID, (err, result) => {
-    res.json(result);
+    if (err) throw err;
+    res.status(200).json(result);
   });
 });
 

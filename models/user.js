@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     ref: 'game',
   },
+  ingame_id: {
+    type: ObjectId,
+    required: true,
+    ref: 'ingame',
+  },
   name: {
     type: String,
     required: true,
@@ -17,7 +22,12 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
   },
-  date: { type: Date, default: Date.now },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now(),
+    expires: 3600,
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);
