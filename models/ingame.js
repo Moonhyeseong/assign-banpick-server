@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.ObjectId;
 
 const inGameSchema = new mongoose.Schema({
-  game_id: {
-    type: ObjectId,
-    ref: 'game',
-  },
   blue_pickList: {
     type: Array,
     required: true,

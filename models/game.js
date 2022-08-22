@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.ObjectId;
 
 const gameSchema = new mongoose.Schema({
-  ingame: {
+  ingame_id: {
     type: ObjectId,
     ref: 'ingame',
   },
@@ -21,6 +21,7 @@ const gameSchema = new mongoose.Schema({
   timer: {
     type: Boolean,
     required: true,
+    default: true,
   },
   createdAt: {
     type: Date,

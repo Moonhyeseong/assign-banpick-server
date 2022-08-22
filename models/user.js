@@ -1,15 +1,11 @@
 const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 const userSchema = new mongoose.Schema({
   game_id: {
     type: ObjectId,
     required: true,
     ref: 'game',
-  },
-  ingame_id: {
-    type: ObjectId,
-    required: true,
-    ref: 'ingame',
   },
   name: {
     type: String,
