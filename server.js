@@ -16,13 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-// io.on('connection', socket => {
-//   console.log('socket.io connection');
-//   socket.on('news', payload => {
-//     console.log(payload);
-//     socket.emit('reply', '브라우저야 안녕');
-//   });
-// });
+io.on('connection', socket => {
+  console.log('socket.io connection');
+  socket.on('news', payload => {
+    console.log(payload);
+    socket.emit('reply', '브라우저야 안녕');
+  });
+});
 
 app.use('/', require('./router/start.js'));
 app.use('/', require('./router/banpick.js'));
