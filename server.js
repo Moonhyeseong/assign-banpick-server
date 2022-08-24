@@ -22,6 +22,14 @@ io.on('connection', socket => {
     console.log(payload);
     socket.emit('reply', '브라우저야 안녕');
   });
+
+  socket.on('ready', payload => {
+    socket.broadcast.emit('ready', payload);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
 
 app.use('/', require('./router/start.js'));

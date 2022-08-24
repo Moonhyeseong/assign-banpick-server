@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/game/info/:id', (req, res) => {
   Game.findById(req.params.id, (err, result) => {
-    if (err) throw err;
+    console.log(result);
     res.json(result);
   });
 });
