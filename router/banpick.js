@@ -7,10 +7,14 @@ router.post('/banpick/:id', (req, res) => {
   const { banList, pickList } = req.body.banPickList;
 
   const update = {
-    blue_pickList: pickList.blue,
-    red_pickList: pickList.red,
-    blue_banList: banList.blue,
-    red_banList: banList.red,
+    banList: {
+      blue: banList.blue,
+      red: banList.red,
+    },
+    pickList: {
+      blue: pickList.blue,
+      red: pickList.red,
+    },
   };
 
   InGame.findOneAndUpdate({ _id: filterID }, update, (err, result) => {

@@ -2,25 +2,16 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.ObjectId;
 
 const inGameSchema = new mongoose.Schema({
-  blue_pickList: {
-    type: Array,
-    required: true,
-    default: ['', '', '', '', ''],
+  banList: {
+    type: Object,
+    require: true,
+    default: { blue: ['', '', '', '', ''], red: ['', '', '', '', ''] },
   },
-  red_pickList: {
-    type: Array,
-    required: true,
-    default: ['', '', '', '', ''],
-  },
-  blue_banList: {
-    type: Array,
-    required: true,
-    default: ['', '', '', '', ''],
-  },
-  red_banList: {
-    type: Array,
-    required: true,
-    default: ['', '', '', '', ''],
+
+  pickList: {
+    type: Object,
+    require: true,
+    default: { blue: ['', '', '', '', ''], red: ['', '', '', '', ''] },
   },
   createdAt: {
     type: Date,
