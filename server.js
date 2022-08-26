@@ -26,7 +26,6 @@ const room = io.of('/room');
 
 room.on('connection', socket => {
   console.log('socket.io connection');
-  socket.join('default');
 
   socket.on('news', payload => {
     console.log(payload);
@@ -39,9 +38,7 @@ room.on('connection', socket => {
   });
 
   socket.on('joinRoom', payload => {
-    socket.leave('default');
     socket.join(payload);
-
     socket.to(payload).emit('join', '대기방에 입장하셧습니다');
   });
 
@@ -49,17 +46,8 @@ room.on('connection', socket => {
     console.log('user disconnected');
   });
 
-  socket.on('banpick', (gameID, banPickList) => {
-    // socket.to(gameID).emit('banpick', payload);
-    console.log(gameID);
-    console.log(banPickList);
-    InGame.findById(gameID, (err, data) => {
-      socket.to(gameID).emit('banpick', data);
-    });
-  });
-
-  socket.on('updateTurn', (gameID, turn) => {
-    console.log(turn);
-    socket.to(gameID).emit('updateTurn', turn);
+  socket.on('banpick', (gameID, banPickList, TurnData) => {
+    socket.broadcast.to(gameID).emit('updateTurn', TurnData);
+    socket.broadcast.to(gameID).emit('banpick', banPickList);
   });
 });
