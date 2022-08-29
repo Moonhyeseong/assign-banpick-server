@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb');
 const Game = require('../models/game');
 const InGame = require('../models/ingame');
 const Editer = require('../models/editer');
-
+const PlayerList = require('../models/playerList');
 const router = express.Router();
 
 router.post('/start', (req, res) => {
@@ -16,14 +16,18 @@ router.post('/start', (req, res) => {
     },
     (err, result) => {
       console.log('Create Game');
-
       if (err) throw err;
+
       InGame.create({ _id: result._id }, (err, result) => {
         if (err) throw err;
         res.status(201).json(result);
       });
 
       Editer.create({ game_id: result._id }, (err, result) => {
+        if (err) throw err;
+      });
+
+      PlayerList.create({ _id: result._id }, (err, result) => {
         if (err) throw err;
       });
     }
