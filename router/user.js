@@ -18,4 +18,13 @@ router.post('/add/user', (req, res) => {
   );
 });
 
+router.get('/user/:id', (req, res) => {
+  console.log(req.params.id);
+  User.findById(req.params.id, (err, result) => {
+    console.log(result);
+
+    res.json(result);
+  });
+});
+
 module.exports = router;

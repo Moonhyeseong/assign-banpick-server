@@ -3,7 +3,8 @@ const cors = require('cors');
 const socket = require('socket.io');
 const connect = require('./models');
 const bodyParser = require('body-parser');
-const InGame = require('./models/ingame');
+
+const Editer = require('./models/editer');
 const PlayerList = require('./models/playerList');
 
 connect();
@@ -22,6 +23,7 @@ app.use('/', require('./router/start.js'));
 app.use('/', require('./router/banpick.js'));
 app.use('/', require('./router/user.js'));
 app.use('/', require('./router/gameInfo.js'));
+app.use('/', require('./router/list.js'));
 // app.use('/', require('./router/socket.js'));
 const room = io.of('/room');
 
@@ -52,6 +54,15 @@ room.on('connection', socket => {
     socket.to(gameID).emit('updateTurn', TurnData);
     socket.to(gameID).emit('banpick', banPickList);
     socket.to(gameID).emit('phase', phaseCounter);
+
+    Editer.findByIdAndUpdate(
+      { _id: gameID },
+      { turnData: TurnData },
+      (err, result) => {
+        if (err) throw err;
+        console.log('turn정보 업데이트');
+      }
+    );
   });
 
   socket.on('selectChampion', (gameID, champion) => {

@@ -1,23 +1,15 @@
 const mongoose = require('mongoose');
-const { ObjectId } = require('mongodb');
 
 const editerSchema = new mongoose.Schema({
-  game_id: {
-    type: ObjectId,
-    required: true,
-  },
   phase: {
     type: String,
     // required: true,
   },
-  turn: {
-    type: String,
+  turnData: {
+    type: Object,
     // required: true,
   },
-  currentIndex: {
-    type: Number,
-    // required: true,
-  },
+
   createdAt: {
     type: Date,
     required: true,
