@@ -80,9 +80,8 @@ room.on('connection', socket => {
 
   socket.on('disconnecting', () => {
     console.log('user disconnected');
-    // socket.broadcast
-    //   .to(socket.rooms)
-    //   .emit('disconnect', '상대방이 종료하였습니다.');
-    console.log(socket.rooms);
+    const room = [...socket.rooms].pop();
+
+    socket.to(room).emit('user-disconnected', '유저 나감');
   });
 });
