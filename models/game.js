@@ -23,6 +23,11 @@ const gameSchema = new mongoose.Schema({
     required: true,
     default: true,
   },
+  isProceeding: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
   createdAt: {
     type: Date,
     required: true,

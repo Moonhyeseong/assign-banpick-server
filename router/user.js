@@ -18,11 +18,24 @@ router.post('/add/user', (req, res) => {
   );
 });
 
+// router.post('/add/user', (req, res) => {
+//   User.create(
+//     {
+//       game_id: new ObjectId(req.body.game_id),
+//       name: req.body.name,
+//       side: req.body.side,
+//       role: req.body.role,
+//     },
+//     (err, result) => {
+//       if (err) throw err;
+//       res.status(201).json(result);
+//     }
+//   );
+// });
+
 router.get('/user/:id', (req, res) => {
   console.log(req.params.id);
   User.findById(req.params.id, (err, result) => {
-    console.log(result);
-
     res.json(result);
   });
 });

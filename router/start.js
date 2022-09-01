@@ -40,11 +40,17 @@ router.get('/start/invite/:id', (req, res) => {
     if (err) console.log(err);
 
     console.log('유저 입장');
+
     const inviteData = {
-      mode: result.mode,
+      mode: result?.mode,
       side: req.query.side,
     };
-    res.json(inviteData);
+    if (result) {
+      res.json(inviteData);
+    } else {
+      const err = new Error('게임정보가 존재하지 않습니다.');
+      res.status(404).json(err);
+    }
   });
 });
 

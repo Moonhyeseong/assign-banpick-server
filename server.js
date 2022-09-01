@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const Editer = require('./models/editer');
 const PlayerList = require('./models/playerList');
+const Game = require('./models/game');
 
 connect();
 
@@ -24,6 +25,7 @@ app.use('/', require('./router/banpick.js'));
 app.use('/', require('./router/user.js'));
 app.use('/', require('./router/gameInfo.js'));
 app.use('/', require('./router/list.js'));
+
 // app.use('/', require('./router/socket.js'));
 const room = io.of('/room');
 
@@ -54,7 +56,7 @@ room.on('connection', socket => {
     socket.to(gameID).emit('updateTurn', TurnData);
     socket.to(gameID).emit('banpick', banPickList);
     socket.to(gameID).emit('phase', phaseCounter);
-
+    //banpick post 처리 여기서
     Editer.findByIdAndUpdate(
       { _id: gameID },
       { turnData: TurnData },
@@ -80,8 +82,36 @@ room.on('connection', socket => {
 
   socket.on('disconnecting', () => {
     console.log('user disconnected');
-    const room = [...socket.rooms].pop();
+    const roomID = [...socket.rooms].pop();
+    //유저가 나가면 진행중 여부를 false로
+    //그런데 대기방에서 나가도 false로 되버림
 
-    socket.to(room).emit('user-disconnected', '유저 나감');
+    //대기방 출입 여부는 마음대로 가능
+    //대기방에서 나갔을땐 isProceeding ture 여야함
+
+    //플레이어 리스트의 배열내 요소 검사를 통해 ''가 없을때만 isProceeding ture 로 전환하기?
+
+    //유저 접속 상태 체크
+    //EX) 슬랙
+
+    // 중국애들
+    // 방리스트
+    // 밴픽리스트 post emit 통합
+    PlayerList.findById({ _id: roomID }, (err, result) => {
+      if (
+        result?.playerList?.blue.indexOf('') === -1 &&
+        result?.playerList?.red.indexOf('') === -1
+      ) {
+        Game.findByIdAndUpdate(
+          { _id: roomID },
+          { isProceeding: false },
+          (err, result) => {
+            console.log(result);
+          }
+        );
+      }
+    });
+
+    socket.to(roomID).emit('user-disconnected', '유저 나감');
   });
 });

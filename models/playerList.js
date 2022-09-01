@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const playerListSchema = new mongoose.Schema({
   playerList: {
     type: Object,
+    // default: { blue: [''], red: [''] },
   },
   createdAt: {
     type: Date,
