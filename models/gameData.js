@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.ObjectId;
 
 const gameSchema = new mongoose.Schema({
   title: {

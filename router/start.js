@@ -32,6 +32,9 @@ router.post('/start', (req, res) => {
       });
     }
   );
+  //@TODO
+  //gameData 모델 생성을 변경
+  //body 데이터 변경 예정
 });
 
 //get 요청시 id에 따라 ingame id로 게임 데이터 전송
