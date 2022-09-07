@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 
-const gameSchema = new mongoose.Schema({
+const gameDataSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
 
-  teamNames: {
-    type: Object,
+  blueTeamName: {
+    type: String,
     required: true,
-    default: { blue: 'BLUE TEAM', red: 'RED TEAM' },
+    default: 'BLUE TEAM',
+  },
+
+  redTeamName: {
+    type: String,
+    required: true,
+    default: 'RED TEAM',
   },
 
   mode: {
@@ -18,7 +24,7 @@ const gameSchema = new mongoose.Schema({
   },
 
   password: {
-    type: string,
+    type: String,
   },
 
   banPickList: {
@@ -49,8 +55,8 @@ const gameSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: Date.now(),
-    expires: 3600 * 24 * 3,
+    expires: 3600,
   },
 });
 
-module.exports = mongoose.model('gameData', gameSchema);
+module.exports = mongoose.model('gameData', gameDataSchema);

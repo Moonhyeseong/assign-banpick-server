@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-app.use('/', require('./router/start.js'));
+app.use('/', require('./router/createGame.js'));
 app.use('/', require('./router/banpick.js'));
 app.use('/', require('./router/user.js'));
 app.use('/', require('./router/gameInfo.js'));
