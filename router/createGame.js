@@ -27,11 +27,8 @@ router.post('/start', (req, res) => {
       userList: initalUserList(),
     },
     (err, result) => {
-      console.log(result);
-      res.json(result);
-      // if(req.body.mode === 1){
-      //   GameData.
-      // }
+      if (err) throw err;
+      res.status(201).json(result);
     }
   );
 });

@@ -8,18 +8,23 @@ const FIVE_VS_FIVE_MODE = 2;
 //선택 버튼 클릭시
 router.post('/user/join', (req, res) => {
   GameData.findById({ _id: req.body.game_id }, (err, result) => {
+    console.log('user_id', req.body.user_id);
     const getUpdatedUserList = () => {
       const updatedUserList = result.userList;
       if (req.body.mode === ONE_VS_ONE_MODE) {
         updatedUserList[req.body.side][0] = {
+          user_id: req.body.user_id,
           name: req.body.name,
           side: req.body.side,
+          isReady: req.body.isReady,
         };
       } else if (req.body.mode === FIVE_VS_FIVE_MODE) {
         updatedUserList[req.body.side][req.body.roleIndex] = {
+          user_id: req.body.user_id,
           name: req.body.name,
           side: req.body.side,
           role: req.body.role,
+          isReady: req.body.isReady,
         };
       }
       return updatedUserList;

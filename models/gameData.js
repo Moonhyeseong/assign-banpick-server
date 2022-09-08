@@ -48,14 +48,14 @@ const gameDataSchema = new mongoose.Schema({
   isProceeding: {
     type: Boolean,
     required: true,
-    default: true,
+    default: false,
   },
 
   createdAt: {
     type: Date,
     required: true,
     default: Date.now(),
-    expires: 3600,
+    expires: 10000,
   },
 });
 

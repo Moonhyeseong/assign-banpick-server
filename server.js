@@ -46,11 +46,19 @@ room.on('connection', socket => {
     );
   });
 
-  socket.on('joinRoom', payload => {
+  socket.once('createGame', () => {
+    console.log('createGame');
+    socket.broadcast.emit('updateGameList', '게임이 생성되었습니다.');
+  });
+
+  socket.once('joinRoom', payload => {
     console.log('유저 입장');
     socket.join(payload);
     socket.in(payload).emit('join', '대기방에 입장하셧습니다');
+    socket.broadcast.emit('updateGameList', 'updateGameList');
   });
+
+  socket.once('userReady', payload => {});
 
   socket.on('banpick', (gameID, banPickList, TurnData, phaseCounter) => {
     socket.to(gameID).emit('updateTurn', TurnData);
@@ -115,3 +123,5 @@ room.on('connection', socket => {
     socket.to(roomID).emit('user-disconnected', '유저 나감');
   });
 });
+
+module.exports = { server, io, room };
