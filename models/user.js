@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema({
   game_id: {
     type: ObjectId,
     required: true,
-    ref: 'game',
+  },
+  user_id: {
+    type: String,
+    required: true,
   },
   name: {
     type: String,
