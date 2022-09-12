@@ -51,25 +51,11 @@ router.post('/user/join', (req, res) => {
   });
 });
 
-// router.post('/add/user', (req, res) => {
-//   User.create(
-//     {
-//       game_id: new ObjectId(req.body.game_id),
-//       name: req.body.name,
-//       side: req.body.side,
-//       role: req.body.role,
-//     },
-//     (err, result) => {
-//       if (err) throw err;
-//       res.status(201).json(result);
-//     }
-//   );
-// });
-
 router.get('/user/:id', (req, res) => {
   console.log(req.params.id);
-  User.findById(req.params.id, (err, result) => {
+  User.findOne({ user_id: req.params.id }, (err, result) => {
     res.json(result);
+    console.log(result);
   });
 });
 

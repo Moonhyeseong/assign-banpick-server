@@ -28,6 +28,7 @@ router.post('/start', (req, res) => {
     },
     (err, result) => {
       if (err) throw err;
+      console.log('게임 생성');
       res.status(201).json(result);
     }
   );

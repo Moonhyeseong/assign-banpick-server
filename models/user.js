@@ -20,12 +20,17 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    default: 'solo',
+  },
+  isReady: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
     required: true,
     default: Date.now(),
-    expires: 3600,
+    expires: 43200,
   },
 });
 
