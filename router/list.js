@@ -1,6 +1,5 @@
 const express = require('express');
-const PlayerList = require('../models/playerList');
-const BanPickList = require('../models/ingame');
+
 const Editer = require('../models/editer');
 const GameData = require('../models/gameData');
 

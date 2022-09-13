@@ -1,5 +1,5 @@
 const express = require('express');
-const InGame = require('../models/ingame');
+const GameData = require('../models/gameData');
 const router = express.Router();
 //선택 버튼 클릭시
 router.post('/banpick/:id', (req, res) => {

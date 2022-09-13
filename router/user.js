@@ -36,7 +36,10 @@ router.post('/user/join', (req, res) => {
     GameData.findByIdAndUpdate(
       { _id: req.body.game_id },
       { userList: getUpdatedUserList() },
-      (err, updatedResult) => {}
+      { new: true },
+      (err, updatedResult) => {
+        res.json(updatedResult);
+      }
     );
 
     User.create({
@@ -48,6 +51,35 @@ router.post('/user/join', (req, res) => {
       isReady: req.body.isReady,
     });
   });
+});
+
+router.post('/user/ready', (req, res) => {
+  GameData.findById({ _id: req.body.game_id }, (err, result) => {
+    const getUpdatedUserList = () => {
+      const updatedUserList = result.userList;
+
+      updatedUserList[req.body.userSide][req.body.userIndex] = {
+        ...updatedUserList[req.body.userSide][req.body.userIndex],
+        isReady: true,
+      };
+      return updatedUserList;
+    };
+
+    GameData.findByIdAndUpdate(
+      { _id: req.body.game_id },
+      { userList: getUpdatedUserList() },
+      { new: true },
+      (err, updatedResult) => {
+        res.json(updatedResult);
+      }
+    );
+  });
+
+  User.findOneAndUpdate(
+    { user_id: req.body.user_id },
+    { isReady: true },
+    (err, updatedResult) => {}
+  );
 });
 
 router.post('/user/solo', (req, res) => {

@@ -5,8 +5,7 @@ const connect = require('./models');
 const bodyParser = require('body-parser');
 
 const Editer = require('./models/editer');
-const PlayerList = require('./models/playerList');
-const Game = require('./models/game');
+
 const GameData = require('./models/gameData');
 const User = require('./models/user');
 
@@ -34,20 +33,6 @@ const room = io.of('/room');
 room.on('connection', socket => {
   console.log('socket.io connection');
 
-  socket.on('ready', (payload, gameId) => {
-    console.log(gameId);
-    socket.to(gameId).emit('ready', payload);
-    socket.to(gameId).emit('gmaeID', gameId);
-    PlayerList.findByIdAndUpdate(
-      { _id: gameId },
-      { playerList: payload },
-      err => {
-        if (err) throw err;
-        console.log('플레이어 리스트 업데이트');
-      }
-    );
-  });
-
   socket.once('createGame', () => {
     console.log('createGame');
     socket.broadcast.emit('updateGameList', '게임이 생성되었습니다.');
@@ -60,44 +45,30 @@ room.on('connection', socket => {
     socket.broadcast.emit('updateGameList', 'updateGameList');
   });
 
-  socket.once('user-join', gameID => {
-    room.in(gameID).emit('user-join', 'updateGameData');
+  socket.once('user-join', (gameID, docs) => {
+    // GameData.findById({ _id: gameID }, (err, result) => {
+    //   if (err) throw err;
+    //   console.log(result.userList);
+    //   socket.broadcast.to(gameID).emit('updateGameData', result);
+    // });
+    socket.broadcast.to(gameID).emit('updateGameData', docs);
   });
 
-  socket.once('userReady', (gameID, userID, userSide, userIndex) => {
-    GameData.findById({ _id: gameID }, (err, result) => {
-      const getUpdatedUserList = () => {
-        const updatedUserList = result.userList;
-
-        updatedUserList[userSide][userIndex] = {
-          ...updatedUserList[userSide][userIndex],
-          isReady: true,
-        };
-        return updatedUserList;
-      };
-
-      GameData.findByIdAndUpdate(
-        { _id: gameID },
-        { userList: getUpdatedUserList() },
-        (err, updatedResult) => {}
-      );
-    });
-
-    User.findOneAndUpdate(
-      { user_id: userID },
-      { isReady: true },
-      (err, updatedResult) => {}
-    );
-
-    room.in(gameID).emit('userReadyEvent', 'userReadyEvent');
+  socket.once('userReadyEvent', (gameID, docs) => {
+    // GameData.findById({ _id: gameID }, (err, result) => {
+    //   if (err) throw err;
+    //   socket.broadcast.to(gameID).emit('updateGameData', result);
+    // });
+    socket.broadcast.to(gameID).emit('updateGameData', docs);
   });
 
   socket.once('start-simulator', gameID => {
     GameData.findByIdAndUpdate(
       { _id: gameID },
       { isProceeding: true },
+      { new: true },
       (err, updatedResult) => {
-        room.in(gameID).emit('userReadyEvent', 'userReadyEvent');
+        room.in(gameID).emit('updateGameData', updatedResult);
       }
     );
   });
@@ -155,20 +126,20 @@ room.on('connection', socket => {
     // 중국애들
     // 방리스트
     // 밴픽리스트 post emit 통합
-    PlayerList.findById({ _id: roomID }, (err, result) => {
-      if (
-        result?.playerList?.blue.indexOf('') === -1 &&
-        result?.playerList?.red.indexOf('') === -1
-      ) {
-        Game.findByIdAndUpdate(
-          { _id: roomID },
-          { isProceeding: false },
-          (err, result) => {
-            console.log(result);
-          }
-        );
-      }
-    });
+    // PlayerList.findById({ _id: roomID }, (err, result) => {
+    //   if (
+    //     result?.playerList?.blue.indexOf('') === -1 &&
+    //     result?.playerList?.red.indexOf('') === -1
+    //   ) {
+    //     Game.findByIdAndUpdate(
+    //       { _id: roomID },
+    //       { isProceeding: false },
+    //       (err, result) => {
+    //         console.log(result);
+    //       }
+    //     );
+    //   }
+    // });
 
     socket.to(roomID).emit('user-disconnected', '유저 나감');
   });
