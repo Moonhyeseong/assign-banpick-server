@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/start', (req, res) => {
   const initalUserList = () => {
-    if (req.body.mode === 1) {
+    if (req.body.mode === 1 || req.body.mode === 0) {
       return {
         blue: [''],
         red: [''],
@@ -25,6 +25,8 @@ router.post('/start', (req, res) => {
       redTeamName: req.body.redTeamName,
       mode: req.body.mode,
       userList: initalUserList(),
+      timer: req.body.timer,
+      isProceeding: req.body.isProceeding,
     },
     (err, result) => {
       if (err) throw err;

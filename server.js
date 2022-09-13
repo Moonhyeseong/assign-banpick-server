@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const Editer = require('./models/editer');
 const PlayerList = require('./models/playerList');
 const Game = require('./models/game');
+const GameData = require('./models/gameData');
+const User = require('./models/user');
 
 connect();
 
@@ -58,13 +60,61 @@ room.on('connection', socket => {
     socket.broadcast.emit('updateGameList', 'updateGameList');
   });
 
-  socket.once('userReady', payload => {});
+  socket.once('user-join', gameID => {
+    room.in(gameID).emit('user-join', 'updateGameData');
+  });
 
-  socket.on('banpick', (gameID, banPickList, TurnData, phaseCounter) => {
+  socket.once('userReady', (gameID, userID, userSide, userIndex) => {
+    GameData.findById({ _id: gameID }, (err, result) => {
+      const getUpdatedUserList = () => {
+        const updatedUserList = result.userList;
+
+        updatedUserList[userSide][userIndex] = {
+          ...updatedUserList[userSide][userIndex],
+          isReady: true,
+        };
+        return updatedUserList;
+      };
+
+      GameData.findByIdAndUpdate(
+        { _id: gameID },
+        { userList: getUpdatedUserList() },
+        (err, updatedResult) => {}
+      );
+    });
+
+    User.findOneAndUpdate(
+      { user_id: userID },
+      { isReady: true },
+      (err, updatedResult) => {}
+    );
+
+    room.in(gameID).emit('userReadyEvent', 'userReadyEvent');
+  });
+
+  socket.once('start-simulator', gameID => {
+    GameData.findByIdAndUpdate(
+      { _id: gameID },
+      { isProceeding: true },
+      (err, updatedResult) => {
+        room.in(gameID).emit('userReadyEvent', 'userReadyEvent');
+      }
+    );
+  });
+
+  socket.once('banpick', (gameID, banPickList, TurnData, phaseCounter) => {
     socket.to(gameID).emit('updateTurn', TurnData);
     socket.to(gameID).emit('banpick', banPickList);
     socket.to(gameID).emit('phase', phaseCounter);
     //banpick post 처리 여기서
+    GameData.findByIdAndUpdate(
+      { _id: gameID },
+      { banPickList: banPickList },
+      (err, updatedResult) => {
+        socket.to(gameID).emit('updateBanPick', updatedResult);
+      }
+    );
+
     Editer.findByIdAndUpdate(
       { _id: gameID },
       { turnData: TurnData },

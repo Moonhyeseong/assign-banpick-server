@@ -4,6 +4,7 @@ const gameDataSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    default: '',
   },
 
   blueTeamName: {
@@ -27,6 +28,12 @@ const gameDataSchema = new mongoose.Schema({
     type: String,
   },
 
+  timer: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+
   banPickList: {
     type: Object,
     required: true,
@@ -39,6 +46,12 @@ const gameDataSchema = new mongoose.Schema({
   userList: {
     type: Object,
     required: true,
+  },
+
+  userReadyCount: {
+    type: Number,
+    required: true,
+    default: 0,
   },
 
   editer: {

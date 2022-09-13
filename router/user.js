@@ -6,9 +6,8 @@ const User = require('../models/user');
 const router = express.Router();
 const ONE_VS_ONE_MODE = 1;
 const FIVE_VS_FIVE_MODE = 2;
-//선택 버튼 클릭시
+
 router.post('/user/join', (req, res) => {
-  console.log(req.body);
   GameData.findById({ _id: req.body.game_id }, (err, result) => {
     const getUpdatedUserList = () => {
       const updatedUserList = result.userList;
@@ -19,6 +18,7 @@ router.post('/user/join', (req, res) => {
           side: req.body.side,
           role: req.body.role,
           isReady: req.body.isReady,
+          isOnline: true,
         };
       } else if (req.body.mode === FIVE_VS_FIVE_MODE) {
         updatedUserList[req.body.side][req.body.roleIndex] = {
@@ -27,6 +27,7 @@ router.post('/user/join', (req, res) => {
           side: req.body.side,
           role: req.body.role,
           isReady: req.body.isReady,
+          isOnline: true,
         };
       }
       return updatedUserList;
@@ -35,9 +36,7 @@ router.post('/user/join', (req, res) => {
     GameData.findByIdAndUpdate(
       { _id: req.body.game_id },
       { userList: getUpdatedUserList() },
-      (err, updatedResult) => {
-        console.log(updatedResult);
-      }
+      (err, updatedResult) => {}
     );
 
     User.create({
@@ -51,11 +50,27 @@ router.post('/user/join', (req, res) => {
   });
 });
 
+router.post('/user/solo', (req, res) => {
+  GameData.findById({ _id: req.body.game_id }, (err, result) => {
+    const getUpdatedUserList = () => {
+      const updatedUserList = result.userList;
+      updatedUserList.blue[0] = 'solo';
+      updatedUserList.red[0] = 'solo';
+
+      return updatedUserList;
+    };
+
+    GameData.findByIdAndUpdate(
+      { _id: req.body.game_id },
+      { userList: getUpdatedUserList() },
+      (err, updatedResult) => {}
+    );
+  });
+});
+
 router.get('/user/:id', (req, res) => {
-  console.log(req.params.id);
   User.findOne({ user_id: req.params.id }, (err, result) => {
     res.json(result);
-    console.log(result);
   });
 });
 
