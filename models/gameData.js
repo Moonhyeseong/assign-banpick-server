@@ -48,14 +48,35 @@ const gameDataSchema = new mongoose.Schema({
     required: true,
   },
 
-  userReadyCount: {
-    type: Number,
-    required: true,
-    default: 0,
+  banpickTurnData: {
+    type: Object,
+    default: [
+      { phase: 'ban', side: 'blue', role: 'TOP' },
+      { phase: 'ban', side: 'red', role: 'TOP' },
+      { phase: 'ban', side: 'blue', role: 'TOP' },
+      { phase: 'ban', side: 'red', role: 'TOP' },
+      { phase: 'ban', side: 'blue', role: 'TOP' },
+      { phase: 'ban', side: 'red', role: 'TOP' },
+      { phase: 'pick', side: 'blue', role: 'TOP' },
+      { phase: 'pick', side: 'red', role: 'TOP' },
+      { phase: 'pick', side: 'red', role: 'JUNGLE' },
+      { phase: 'pick', side: 'blue', role: 'JUNGLE' },
+      { phase: 'pick', side: 'blue', role: 'MID' },
+      { phase: 'pick', side: 'red', role: 'MID' },
+      { phase: 'ban', side: 'red', role: 'TOP' },
+      { phase: 'ban', side: 'blue', role: 'TOP' },
+      { phase: 'ban', side: 'red', role: 'TOP' },
+      { phase: 'ban', side: 'blue', role: 'TOP' },
+      { phase: 'pick', side: 'red', role: 'ADC' },
+      { phase: 'pick', side: 'blue', role: 'ADC' },
+      { phase: 'pick', side: 'blue', role: 'SUPPORT' },
+      { phase: 'pick', side: 'red', role: 'SUPPORT' },
+    ],
   },
 
-  editer: {
-    type: Object,
+  banpickCount: {
+    type: Number,
+    default: 0,
   },
 
   isProceeding: {

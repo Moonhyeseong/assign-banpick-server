@@ -4,8 +4,6 @@ const socket = require('socket.io');
 const connect = require('./models');
 const bodyParser = require('body-parser');
 
-const Editer = require('./models/editer');
-
 const GameData = require('./models/gameData');
 const User = require('./models/user');
 
@@ -22,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/', require('./router/createGame.js'));
-app.use('/', require('./router/banpick.js'));
+// app.use('/', require('./router/banpick.js'));
 app.use('/', require('./router/user.js'));
 app.use('/', require('./router/gameInfo.js'));
 app.use('/', require('./router/list.js'));
@@ -51,7 +49,7 @@ room.on('connection', socket => {
     //   console.log(result.userList);
     //   socket.broadcast.to(gameID).emit('updateGameData', result);
     // });
-    socket.broadcast.to(gameID).emit('updateGameData', docs);
+    room.in(gameID).emit('updateGameData', docs);
   });
 
   socket.once('userReadyEvent', (gameID, docs) => {
@@ -59,7 +57,7 @@ room.on('connection', socket => {
     //   if (err) throw err;
     //   socket.broadcast.to(gameID).emit('updateGameData', result);
     // });
-    socket.broadcast.to(gameID).emit('updateGameData', docs);
+    room.in(gameID).emit('updateGameData', docs);
   });
 
   socket.once('start-simulator', gameID => {
@@ -73,31 +71,26 @@ room.on('connection', socket => {
     );
   });
 
-  socket.once('banpick', (gameID, banPickList, TurnData, phaseCounter) => {
-    socket.to(gameID).emit('updateTurn', TurnData);
-    socket.to(gameID).emit('banpick', banPickList);
-    socket.to(gameID).emit('phase', phaseCounter);
-    //banpick post 처리 여기서
+  socket.on('banpick', (gameID, banPickList, banpickCount, phaseCounter) => {
+    socket.to(gameID).emit('banpick', banPickList, phaseCounter);
+
     GameData.findByIdAndUpdate(
       { _id: gameID },
-      { banPickList: banPickList },
+      {
+        $set: {
+          banPickList: banPickList,
+          banpickCount: banpickCount + 1,
+        },
+      },
+      { new: true },
       (err, updatedResult) => {
-        socket.to(gameID).emit('updateBanPick', updatedResult);
-      }
-    );
-
-    Editer.findByIdAndUpdate(
-      { _id: gameID },
-      { turnData: TurnData },
-      (err, result) => {
         if (err) throw err;
-        console.log('turn정보 업데이트');
+        room.in(gameID).emit('updateGameData', updatedResult);
       }
     );
   });
 
   socket.on('selectChampion', (gameID, champion) => {
-    console.log(champion);
     socket.broadcast.to(gameID).emit('selectChampion', champion);
   });
 

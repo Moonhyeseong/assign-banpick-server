@@ -29,8 +29,9 @@ router.post('/start', (req, res) => {
       isProceeding: req.body.isProceeding,
     },
     (err, result) => {
-      if (err) throw err;
+      if (err) throw console.log('create game', err);
       console.log('게임 생성');
+      console.log(result);
       res.status(201).json(result);
     }
   );
