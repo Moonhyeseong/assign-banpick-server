@@ -70,6 +70,7 @@ router.post('/user/ready', (req, res) => {
       { userList: getUpdatedUserList() },
       { new: true },
       (err, updatedResult) => {
+        if (err) throw err;
         res.json(updatedResult);
       }
     );

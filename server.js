@@ -20,7 +20,6 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/', require('./router/createGame.js'));
-// app.use('/', require('./router/banpick.js'));
 app.use('/', require('./router/user.js'));
 app.use('/', require('./router/gameInfo.js'));
 app.use('/', require('./router/list.js'));
@@ -39,24 +38,18 @@ room.on('connection', socket => {
   socket.once('joinRoom', payload => {
     console.log('유저 입장');
     socket.join(payload);
+
     socket.in(payload).emit('join', '대기방에 입장하셧습니다');
     socket.broadcast.emit('updateGameList', 'updateGameList');
   });
 
-  socket.once('user-join', (gameID, docs) => {
-    // GameData.findById({ _id: gameID }, (err, result) => {
-    //   if (err) throw err;
-    //   console.log(result.userList);
-    //   socket.broadcast.to(gameID).emit('updateGameData', result);
-    // });
-    room.in(gameID).emit('updateGameData', docs);
+  socket.once('user-join', (gameID, updateGameData, userID) => {
+    socket.userID = userID;
+
+    room.in(gameID).emit('updateGameData', updateGameData);
   });
 
   socket.once('userReadyEvent', (gameID, docs) => {
-    // GameData.findById({ _id: gameID }, (err, result) => {
-    //   if (err) throw err;
-    //   socket.broadcast.to(gameID).emit('updateGameData', result);
-    // });
     room.in(gameID).emit('updateGameData', docs);
   });
 
@@ -103,38 +96,53 @@ room.on('connection', socket => {
   });
 
   socket.on('disconnecting', () => {
-    console.log('user disconnected');
     const roomID = [...socket.rooms].pop();
-    //유저가 나가면 진행중 여부를 false로
-    //그런데 대기방에서 나가도 false로 되버림
 
-    //대기방 출입 여부는 마음대로 가능
-    //대기방에서 나갔을땐 isProceeding ture 여야함
+    GameData.findById({ _id: roomID }, (err, result) => {
+      if (result?.isProceeding) {
+        socket.to(roomID).emit('shutdown-simulator', 'shutdown-simulator');
+        GameData.deleteOne({ _id: roomID }).exec();
+      }
 
-    //플레이어 리스트의 배열내 요소 검사를 통해 ''가 없을때만 isProceeding ture 로 전환하기?
+      let updatedBlueUserListData = [];
+      let updatedRedUserListData = [];
 
-    //유저 접속 상태 체크
-    //EX) 슬랙
+      const blueUserListData = result?.userList.blue;
+      const redUserListData = result?.userList.red;
 
-    // 중국애들
-    // 방리스트
-    // 밴픽리스트 post emit 통합
-    // PlayerList.findById({ _id: roomID }, (err, result) => {
-    //   if (
-    //     result?.playerList?.blue.indexOf('') === -1 &&
-    //     result?.playerList?.red.indexOf('') === -1
-    //   ) {
-    //     Game.findByIdAndUpdate(
-    //       { _id: roomID },
-    //       { isProceeding: false },
-    //       (err, result) => {
-    //         console.log(result);
-    //       }
-    //     );
-    //   }
-    // });
+      blueUserListData?.map(user => {
+        if (user.user_id === socket.userID) {
+          updatedBlueUserListData.push('');
+        } else {
+          updatedBlueUserListData.push(user);
+        }
+        return updatedBlueUserListData;
+      });
 
-    socket.to(roomID).emit('user-disconnected', '유저 나감');
+      redUserListData?.map(user => {
+        if (user.user_id === socket.userID) {
+          updatedRedUserListData.push('');
+        } else {
+          updatedRedUserListData.push(user);
+        }
+        return updatedRedUserListData;
+      });
+
+      GameData.findByIdAndUpdate(
+        { _id: roomID },
+        {
+          userList: {
+            blue: updatedBlueUserListData,
+            red: updatedRedUserListData,
+          },
+        },
+        { new: true },
+        (err, result) => {
+          socket.broadcast.emit('updateGameList', 'updateGameList');
+          room.in(roomID).emit('updateGameData', result);
+        }
+      );
+    });
   });
 });
 

@@ -9,6 +9,7 @@ router.get('/list', (req, res) => {
   GameData.find({})
     .sort({ createdAt: -1 })
     .exec(function (err, docs) {
+      if (err) throw err;
       res.json(docs);
     });
 });

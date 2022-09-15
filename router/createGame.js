@@ -31,30 +31,10 @@ router.post('/start', (req, res) => {
     (err, result) => {
       if (err) throw console.log('create game', err);
       console.log('게임 생성');
-      console.log(result);
+
       res.status(201).json(result);
     }
   );
 });
-
-//get 요청시 id에 따라 ingame id로 게임 데이터 전송
-// router.get('/start/:id', (req, res) => {
-//   Game.findById(req.params.id, (err, result) => {
-//     if (err) console.log(err);
-
-//     console.log('유저 입장');
-
-//     const inviteData = {
-//       mode: result?.mode,
-//       side: req.query.side,
-//     };
-//     if (result) {
-//       res.json(inviteData);
-//     } else {
-//       const err = new Error('게임정보가 존재하지 않습니다.');
-//       res.status(404).json(err);
-//     }
-//   });
-// });
 
 module.exports = router;

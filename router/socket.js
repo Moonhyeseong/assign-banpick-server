@@ -19,6 +19,7 @@ room.on('connection', socket => {
 
   socket.once('joinRoom', payload => {
     console.log('유저 입장');
+
     socket.join(payload);
     socket.in(payload).emit('join', '대기방에 입장하셧습니다');
     socket.broadcast.emit('updateGameList', 'updateGameList');
