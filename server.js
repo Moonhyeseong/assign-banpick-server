@@ -102,6 +102,7 @@ room.on('connection', socket => {
       if (result?.isProceeding) {
         socket.to(roomID).emit('shutdown-simulator', 'shutdown-simulator');
         GameData.deleteOne({ _id: roomID }).exec();
+        User.deleteMany({ game_id: roomID }).exec();
       }
 
       let updatedBlueUserListData = [];
@@ -138,6 +139,22 @@ room.on('connection', socket => {
         },
         { new: true },
         (err, result) => {
+          //유저이탈후 참가인원 검사
+          const activeBlueTeamUsers = result?.userList.blue.filter(user => {
+            return user !== '';
+          });
+          const activeRedTeamUsers = result?.userList.red.filter(user => {
+            return user !== '';
+          });
+
+          if (
+            activeBlueTeamUsers?.length === 0 &&
+            activeRedTeamUsers?.length === 0
+          ) {
+            GameData.deleteOne({ _id: roomID }).exec();
+            User.deleteMany({ game_id: roomID }).exec();
+          }
+
           socket.broadcast.emit('updateGameList', 'updateGameList');
           room.in(roomID).emit('updateGameData', result);
         }

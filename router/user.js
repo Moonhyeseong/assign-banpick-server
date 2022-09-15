@@ -98,6 +98,15 @@ router.post('/user/solo', (req, res) => {
       { userList: getUpdatedUserList() },
       (err, updatedResult) => {}
     );
+
+    User.create({
+      game_id: req.body.game_id,
+      user_id: req.body.user_id,
+      name: 'solo',
+      side: 'solo',
+      role: 'solo',
+      isReady: true,
+    });
   });
 });
 
