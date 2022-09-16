@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema({
   game_id: {
     type: ObjectId,
     required: true,
-    ref: 'game',
+  },
+  user_id: {
+    type: String,
+    required: true,
   },
   name: {
     type: String,
@@ -17,12 +20,21 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    default: 'solo',
+  },
+  isReady: {
+    type: Boolean,
+    default: false,
+  },
+  isOnline: {
+    type: Boolean,
+    default: true,
   },
   createdAt: {
     type: Date,
     required: true,
     default: Date.now(),
-    expires: 3600,
+    expires: 43200,
   },
 });
 

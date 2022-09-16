@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const dbUrl =
   'mongodb+srv://mhs970:745263sy@cluster0.viyda96.mongodb.net/?retryWrites=true&w=majority';
 
-// 몽구스 연결
+// mongoose 연결
 const connect = () => {
   mongoose.connect(
     dbUrl,
